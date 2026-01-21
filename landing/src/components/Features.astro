@@ -1,0 +1,62 @@
+---
+import { Lock, Brain, Zap, Fingerprint } from "lucide-astro";
+
+const features = [
+    {
+        icon: Lock,
+        title: "100% Privado",
+        description:
+            "Tus palabras, tus ideas y tus correos nunca salen de tu ordenador. Nadie te escucha, nadie te lee.",
+    },
+    {
+        icon: Brain,
+        title: "Inteligencia Local",
+        description:
+            "Modelos de IA potentes que corren directamente en tu hardware. Sin retrasos de red, sin suscripciones a la nube.",
+    },
+    {
+        icon: Fingerprint,
+        title: "Personalización Real",
+        description:
+            "Zerotype aprende de tu estilo único. Crea diccionarios personales y adapta el tono a tu voz.",
+    },
+    {
+        icon: Zap,
+        title: "Instantáneo",
+        description:
+            "Sin tiempos de espera. Escribe, dicta y corrige a la velocidad del pensamiento. Funciona donde sea, incluso en un avión.",
+    },
+];
+---
+
+<section class="py-32 bg-zinc-900/20">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">
+                Tu privacidad no es negociable
+            </h2>
+            <p class="text-xl text-zinc-400 max-w-2xl mx-auto">
+                La mayoría de asistentes envían tus datos a la nube. Zerotype
+                trae la nube a ti.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {
+                features.map((feature, index) => (
+                    <div class="group p-8 rounded-3xl bg-zinc-900/40 border border-white/5 hover:cursor-crosshair hover:bg-zinc-900/80 hover:border-white/10 transition-all duration-300">
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-6 text-white group-hover:scale-110 group-hover:bg-white/10 transition-all duration-300">
+                            <feature.icon class="w-7 h-7" />
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-white">
+                            {feature.title}
+                        </h3>
+                        <p class="text-zinc-400 leading-relaxed">
+                            {feature.description}
+                        </p>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>

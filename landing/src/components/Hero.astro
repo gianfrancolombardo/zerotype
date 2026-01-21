@@ -1,0 +1,93 @@
+---
+import { Download, ArrowRight, ShieldCheck, Cpu, WifiOff } from "lucide-astro";
+import Button from "./Button.astro";
+import PrivacyBadge from "./PrivacyBadge.astro";
+---
+
+<section
+    class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+>
+    <!-- Background Effects -->
+    <div class="absolute inset-0 z-0">
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"
+        >
+        </div>
+        <div
+            class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.8)_100%)]"
+        >
+        </div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+        <div class="mb-8 animate-[fade-in_0.6s_ease-out_forwards]">
+            <PrivacyBadge />
+        </div>
+
+        <h1
+            class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter mb-8 animate-[slide-up_0.8s_ease-out_forwards]"
+        >
+            Escribe a la velocidad<br />
+            <span
+                class="text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-500"
+                >del pensamiento.</span
+            >
+        </h1>
+
+        <p
+            class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 animate-[slide-up_0.9s_ease-out_0.1s_forwards] opacity-0 leading-relaxed"
+        >
+            Transforma tu voz en texto perfecto con la primera IA de dictado que
+            vive en tu ordenador. Privacidad total, sin esperas y sin límites.
+        </p>
+
+        <div
+            class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-[slide-up_1s_ease-out_0.2s_forwards] opacity-0"
+        >
+            <Button
+                href="https://github.com/gianfrancolombardo/zerotype/releases/latest"
+                variant="primary"
+                class="w-full sm:w-auto text-lg px-8 py-4"
+            >
+                <Download class="w-5 h-5" />
+                Descargar para Windows
+            </Button>
+            <Button
+                href="https://github.com/gianfrancolombardo/zerotype"
+                variant="ghost"
+                class="w-full sm:w-auto text-lg px-8 py-4"
+            >
+                Ver Proyecto
+                <ArrowRight
+                    class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                />
+            </Button>
+        </div>
+
+        <div
+            class="mt-24 border-t border-white/5 pt-12 animate-[fade-in_1.2s_ease-out_0.4s_forwards] opacity-0"
+        >
+            <p
+                class="text-sm text-zinc-500 mb-8 uppercase tracking-widest text-[10px]"
+            >
+                Privacidad Absoluta por Diseño
+            </p>
+            <div
+                class="flex flex-wrap items-center justify-center gap-12 text-zinc-400"
+            >
+                <div class="flex items-center gap-3">
+                    <WifiOff class="w-6 h-6" />
+                    <span class="font-medium">Funciona Offline</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <Cpu class="w-6 h-6" />
+                    <span class="font-medium">Procesamiento Local</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <ShieldCheck class="w-6 h-6" />
+                    <span class="font-medium">Cero Rastreo</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

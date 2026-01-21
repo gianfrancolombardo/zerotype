@@ -1,0 +1,56 @@
+---
+import Button from "./Button.astro";
+import { Download, ArrowRight } from "lucide-astro";
+---
+
+<section class="py-32 relative overflow-hidden">
+    <!-- Background Gradients -->
+    <div class="absolute inset-0 pointer-events-none">
+        <div
+            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px]"
+        >
+        </div>
+    </div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
+        <h2
+            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 tracking-tight animate-[slide-up_0.6s_ease-out_forwards] opacity-0"
+        >
+            Listo para cambiar tu <br />
+            <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-white"
+                >forma de escribir?</span
+            >
+        </h2>
+
+        <p
+            class="text-xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed animate-[slide-up_0.6s_ease-out_0.2s_forwards] opacity-0"
+        >
+            Descarga Zerotype hoy y experimenta la libertad de escribir sin
+            interrupciones. Tu privacidad es nuestra prioridad.
+        </p>
+
+        <div
+            class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-[slide-up_0.6s_ease-out_0.4s_forwards] opacity-0"
+        >
+            <Button
+                href="https://github.com/gianfrancolombardo/zerotype/releases/latest"
+                variant="primary"
+                class="w-full sm:w-auto text-lg px-8 py-4"
+            >
+                <Download class="w-5 h-5" />
+                Descargar Gratis
+            </Button>
+            <Button
+                href="https://github.com/gianfrancolombardo/zerotype"
+                variant="ghost"
+                class="w-full sm:w-auto text-lg px-8 py-4"
+            >
+                <span class="mr-2">Ver en GitHub</span>
+                <ArrowRight
+                    class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                />
+            </Button>
+        </div>
+    </div>
+</section>

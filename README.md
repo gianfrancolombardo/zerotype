@@ -1,12 +1,27 @@
-# Zerotype (MVP)
+Zerotype is a **blazing fast**, "Push-to-Talk" AI transcription tool for Windows. Hold **F4**, speak, and the text will be typed into your active application instantly.
 
-Zerotype is a "Push-to-Talk" AI transcription tool for Windows. Hold **F4**, speak, and the text will be typed into your active application.
+## 🛡️ Maximum Privacy & Security
+- **100% Core Local:** All transcription happens on your machine.
+- **Zero Data Harvesting:** No audio or text is ever saved, logged, or sent to external servers.
+- **Proven Privacy:** Your voice stays your own. No clouds, no APIs, no tracking.
 
-## 🚀 Features
-- **Global Hotkey:** Hold `F4` to record anywhere.
-- **Local AI:** Uses `faster-whisper` for high-accuracy, offline transcription.
-- **Minimalist UI:** Unintrusive floating overlay.
+## 🚀 Key Features
+- **Global Hotkey:** Hold `F4` (or your [custom hotkey](#-configuration)) to record anywhere.
+- **High Speed:** Powered by `faster-whisper` for near-instant transcription.
+- **Fully Configurable:** Easily change the trigger key and AI model size for your needs.
 - **Focus Preservation:** Does not steal focus from your active window (Word, Slack, VS Code, etc.).
+
+## ⚙️ Configuration
+You can customize the behavior in `backend/config.json`:
+```json
+{
+  "hotkey": "f4",
+  "model": "tiny"
+}
+```
+*   **hotkey**: Any key supported by the `keyboard` library.
+*   **model**: `tiny`, `base`, `small`, `medium`, or `large-v3` (Note: larger models are more accurate but slower and require more RAM/VRAM).
+
 
 ## 🛠️ Installation
 

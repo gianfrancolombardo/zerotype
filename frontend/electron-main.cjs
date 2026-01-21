@@ -151,12 +151,12 @@ function startPythonBackend() {
     if (isDev) {
         scriptPath = path.join(__dirname, '../backend/main.py');
         pythonPath = path.join(__dirname, '../backend/venv/Scripts/python.exe');
+        pythonProcess = spawn(pythonPath, [scriptPath]);
     } else {
-        scriptPath = path.join(process.resourcesPath, 'backend/main.py');
-        pythonPath = path.join(process.resourcesPath, 'backend/venv/Scripts/python.exe');
+        // In production, use the compiled executable
+        const exePath = path.join(process.resourcesPath, 'zerotype_engine', 'zerotype_engine.exe');
+        pythonProcess = spawn(exePath);
     }
-
-    pythonProcess = spawn(pythonPath, [scriptPath]);
 
     pythonProcess.stdout.on('data', (data) => {
         const lines = data.toString().split('\n');

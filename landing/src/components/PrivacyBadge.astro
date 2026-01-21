@@ -1,0 +1,23 @@
+---
+import { Lock } from "lucide-astro";
+
+interface Props {
+    text?: string;
+    class?: string;
+}
+
+const { text = "100% Privado. Procesamiento Local.", class: className } =
+    Astro.props;
+---
+
+<div
+    class:list={[
+        "inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-emerald-500/30 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.1)]",
+        className,
+    ]}
+>
+    <div class="p-1 rounded-full bg-emerald-500/20 text-emerald-400">
+        <Lock class="w-3.5 h-3.5" />
+    </div>
+    <span class="text-sm font-medium text-zinc-300 tracking-wide">{text}</span>
+</div>

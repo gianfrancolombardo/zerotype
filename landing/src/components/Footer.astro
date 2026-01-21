@@ -1,0 +1,40 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="border-t border-white/5 bg-black py-12">
+    <div
+        class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6"
+    >
+        <div class="flex items-center gap-2">
+            <div
+                class="w-6 h-6 rounded-md bg-zinc-800 flex items-center justify-center"
+            >
+                <span class="font-bold text-white text-xs">Z</span>
+            </div>
+            <span class="text-zinc-400 font-medium">Zerotype</span>
+        </div>
+
+        <p class="text-sm text-zinc-600">
+            &copy; {currentYear} Zerotype. Open Source Software.
+        </p>
+
+        <div class="flex items-center gap-6">
+            <a
+                href="#"
+                class="text-sm text-zinc-500 hover:text-white transition-colors"
+                >Privacidad</a
+            >
+            <a
+                href="#"
+                class="text-sm text-zinc-500 hover:text-white transition-colors"
+                >Términos</a
+            >
+            <a
+                href="https://github.com/gianfrancolombardo/zerotype"
+                class="text-sm text-zinc-500 hover:text-white transition-colors"
+                >GitHub</a
+            >
+        </div>
+    </div>
+</footer>
