@@ -1,7 +1,8 @@
 {
   "name": "zerotype",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "author": "GLombardo",
   "type": "module",
   "main": "electron-main.cjs",
   "scripts": {
@@ -44,6 +45,7 @@
     },
     "files": [
       "dist/**/*",
+      "assets/**/*",
       "electron-main.cjs",
       "preload.js",
       "package.json"

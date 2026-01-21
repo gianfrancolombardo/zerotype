@@ -1,56 +1,133 @@
 ---
 import Button from "./Button.astro";
-import { Download, ArrowRight } from "lucide-astro";
+import { Download } from "lucide-astro";
 ---
 
-<section class="py-32 relative overflow-hidden">
-    <!-- Background Gradients -->
+<section class="py-32 relative overflow-hidden bg-black">
+    <!-- Floating Particles Background -->
+    <div class="absolute inset-0 pointer-events-none">
+        {
+            [...Array(40)].map((_, i) => (
+                <div
+                    class="absolute w-1 h-1 bg-indigo-400 rounded-full animate-float opacity-0"
+                    style={`
+                    top: ${Math.random() * 80 + 10}%;
+                    left: ${Math.random() * 100}%;
+                    animation-delay: ${Math.random() * 4}s;
+                    animation-duration: ${0.8 + Math.random() * 1.2}s;
+                    box-shadow: 0 0 14px rgba(129, 140, 248, 1);
+                `}
+                />
+            ))
+        }
+    </div>
+
+    <!-- Radial Glows -->
     <div class="absolute inset-0 pointer-events-none">
         <div
-            class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px]"
+            class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px]"
+        >
+        </div>
+        <div
+            class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[140px]"
         >
         </div>
     </div>
 
     <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
         <h2
-            class="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 tracking-tight animate-[slide-up_0.6s_ease-out_forwards] opacity-0"
+            class="text-4xl md:text-6xl font-bold mb-8 tracking-tight animate-[slide-up_0.8s_ease-out_forwards] opacity-0"
         >
-            Listo para cambiar tu <br />
+            Tus ideas, a la velocidad <br />
             <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-white"
-                >forma de escribir?</span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-white to-indigo-400 bg-[length:200%_auto] animate-shimmer"
             >
+                de tu propia voz<span
+                    class="text-indigo-500 hidden animate-pulse-cursor">|</span
+                >
+            </span>
         </h2>
 
         <p
-            class="text-xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed animate-[slide-up_0.6s_ease-out_0.2s_forwards] opacity-0"
+            class="text-xl text-zinc-400 mb-12 max-w-2xl mx-auto leading-relaxed animate-[slide-up_0.8s_ease-out_0.2s_forwards] opacity-0"
         >
-            Descarga Zerotype hoy y experimenta la libertad de escribir sin
-            interrupciones. Tu privacidad es nuestra prioridad.
+            Rompe las barreras entre el pensamiento y la pantalla. Zerotype
+            procesa cada palabra localmente, con la privacidad que tus ideas
+            merecen.
         </p>
 
         <div
-            class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-[slide-up_0.6s_ease-out_0.4s_forwards] opacity-0"
+            class="flex items-center justify-center animate-[slide-up_0.8s_ease-out_0.4s_forwards] opacity-0"
         >
             <Button
                 href="https://github.com/gianfrancolombardo/zerotype/releases/latest"
                 variant="primary"
-                class="w-full sm:w-auto text-lg px-8 py-4"
+                class="group relative overflow-hidden text-lg px-10 py-5 transition-all hover:scale-105 active:scale-95"
             >
-                <Download class="w-5 h-5" />
-                Descargar Gratis
-            </Button>
-            <Button
-                href="https://github.com/gianfrancolombardo/zerotype"
-                variant="ghost"
-                class="w-full sm:w-auto text-lg px-8 py-4"
-            >
-                <span class="mr-2">Ver en GitHub</span>
-                <ArrowRight
-                    class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                </div>
+                <Download
+                    class="w-5 h-5 mr-2 group-hover:translate-y-0.5 transition-transform"
                 />
+                Descargar Gratis
             </Button>
         </div>
     </div>
 </section>
+
+<style>
+    @keyframes float {
+        0% {
+            transform: scale(0.1);
+            opacity: 0;
+        }
+        2% {
+            transform: translateY(-30px) scale(1);
+            opacity: 0.9;
+        } /* Entrada ultra-rápida */
+        70% {
+            transform: translateY(-50px) scale(1.1);
+            opacity: 0.9;
+        } /* Trayecto corto */
+        90% {
+            transform: translateY(-200px) scale(0.1);
+            opacity: 0;
+        } /* Ráfaga de salida violenta */
+        100% {
+            opacity: 0;
+        }
+    }
+
+    .animate-float {
+        animation: float infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes pulse-cursor {
+        0%,
+        100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+    }
+
+    .animate-pulse-cursor {
+        animation: pulse-cursor 1s step-end infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: 0% center;
+        }
+        100% {
+            background-position: 200% center;
+        }
+    }
+
+    .animate-shimmer {
+        animation: shimmer 4s linear infinite;
+    }
+</style>

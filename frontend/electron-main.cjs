@@ -9,6 +9,19 @@ let settingsWindow;
 
 const fs = require('fs');
 
+// Log errors to a file for debugging production issues
+const logPath = path.join(app.getPath('userData'), 'crash-log.txt');
+function log(msg) {
+    const timestamp = new Date().toISOString();
+    fs.appendFileSync(logPath, `[${timestamp}] ${msg}\n`);
+}
+
+log('App starting...');
+process.on('uncaughtException', (error) => {
+    log(`Uncaught Exception: ${error.stack || error}`);
+});
+
+
 ipcMain.on('save-settings', (event, settings) => {
     console.log('Saving settings:', settings);
     if (pythonProcess) {
@@ -25,6 +38,7 @@ ipcMain.handle('get-settings', async () => {
             return JSON.parse(data);
         }
     } catch (e) {
+        log(`Failed to load settings: ${e}`);
         console.error("Failed to read config:", e);
     }
     return { hotkey: 'f4', model: 'tiny' };
@@ -75,6 +89,15 @@ function createWindow() {
         mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'));
     }
 
+    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+        log(`Main window failed to load: ${errorDescription} (${errorCode})`);
+    });
+
+    mainWindow.once('ready-to-show', () => {
+        log('Main window ready to show');
+        // mainWindow.show(); // It starts hidden by design
+    });
+
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
 }
 
@@ -102,7 +125,12 @@ function createSettingsWindow() {
         },
     });
 
+    settingsWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+        log(`Settings window failed to load: ${errorDescription} (${errorCode})`);
+    });
+
     settingsWindow.once('ready-to-show', () => {
+        log('Settings window ready to show');
         settingsWindow.show();
     });
 
@@ -189,7 +217,12 @@ function startPythonBackend() {
         console.error(`Python Error: ${data}`);
     });
 
+    pythonProcess.on('error', (err) => {
+        log(`Failed to start Python process: ${err}`);
+    });
+
     pythonProcess.on('close', (code) => {
+        log(`Python process exited with code ${code}`);
         console.log(`Python process exited with code ${code}`);
     });
 }

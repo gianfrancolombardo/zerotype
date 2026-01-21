@@ -184,5 +184,5 @@ class ZerotypeEngine:
             print_status("error", {"message": str(e)})
 
 if __name__ == "__main__":
-    engine = TypolessEngine()
+    engine = ZerotypeEngine()
     engine.run()
