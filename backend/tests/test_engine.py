@@ -20,13 +20,13 @@ class TestConfigManager(unittest.TestCase):
             os.remove(self.config_path)
 
     def test_default_config(self):
-        config = self.cm.get_config()
+        config = self.cm.config
         self.assertEqual(config['hotkey'], 'f4')
         self.assertEqual(config['model'], 'tiny')
 
     def test_update_config(self):
-        self.cm.update_config({'hotkey': 'f5', 'model': 'base'})
-        config = self.cm.get_config()
+        self.cm.save_config({'hotkey': 'f5', 'model': 'base'})
+        config = self.cm.config
         self.assertEqual(config['hotkey'], 'f5')
         self.assertEqual(config['model'], 'base')
         

@@ -9,6 +9,9 @@ import PrivacyBadge from "./PrivacyBadge.astro";
 >
     <!-- Background Effects -->
     <div class="absolute inset-0 z-0">
+        <canvas
+            id="hero-canvas"
+            class="absolute inset-0 w-full h-full opacity-40"></canvas>
         <div
             class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"
         >
@@ -19,8 +22,107 @@ import PrivacyBadge from "./PrivacyBadge.astro";
         </div>
     </div>
 
+    <script>
+        const canvas = document.getElementById(
+            "hero-canvas",
+        ) as HTMLCanvasElement;
+        const ctx = canvas?.getContext("2d");
+
+        if (canvas && ctx) {
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+
+            const particles: any[] = [];
+            const particleCount = 200;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            class Particle {
+                x: number;
+                y: number;
+                z: number;
+                px: number;
+                py: number;
+                vx: number;
+                vy: number;
+                color: string;
+
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = (Math.random() - 0.5) * width;
+                    this.y = (Math.random() - 0.5) * height;
+                    this.z = Math.random() * width;
+                    this.px = 0;
+                    this.py = 0;
+                    this.color = "#818cf8"; // indigo-400
+                }
+
+                update() {
+                    this.px = this.x / (this.z / width) + centerX;
+                    this.py = this.y / (this.z / width) + centerY;
+
+                    this.z -= 15; // Speed
+
+                    if (this.z < 1) {
+                        this.reset();
+                    }
+                }
+
+                draw() {
+                    const x = this.x / (this.z / width) + centerX;
+                    const y = this.y / (this.z / width) + centerY;
+
+                    if (this.px !== 0) {
+                        ctx!.beginPath();
+                        ctx!.strokeStyle = this.color;
+                        ctx!.lineWidth = Math.min(2, width / this.z);
+                        ctx!.lineCap = "round";
+                        ctx!.moveTo(x, y);
+                        ctx!.lineTo(this.px, this.py);
+                        ctx!.stroke();
+
+                        // Glow effect
+                        ctx!.shadowBlur = 10;
+                        ctx!.shadowColor = this.color;
+                    }
+                }
+            }
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animate() {
+                ctx!.clearRect(0, 0, width, height);
+                // Subtle trail effect
+                ctx!.fillStyle = "rgba(0, 0, 0, 0.1)";
+                ctx!.fillRect(0, 0, width, height);
+
+                particles.forEach((p) => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener("resize", () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            });
+
+            animate();
+        }
+    </script>
+
     <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
-        <div class="mb-8 animate-[fade-in_0.6s_ease-out_forwards]">
+        <div class="mt-4 mb-12 animate-[fade-in_0.6s_ease-out_forwards]">
             <PrivacyBadge />
         </div>
 

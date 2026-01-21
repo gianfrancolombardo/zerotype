@@ -17,22 +17,37 @@ body {
   justify-content: center;
 }
 
+/* Expanded container to allow particles to drift far beyond the button */
 .app-container {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  height: 100%;
+  max-width: 300px;
+  max-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a1a;
-  border-radius: 32px;
-  /* Slightly smoother squircle */
-  color: white;
   user-select: none;
   -webkit-app-region: drag;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: visible;
+}
+
+/* Updated for V5: Solid background to completely hide internal particles */
+.visual-card {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0e0e11;
+  /* Solid dark color */
+  border-radius: 20px;
+  border: 1px solid var(--color-dark-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(8px);
   overflow: hidden;
-  /* Ensure waves don't spill out */
 }
 
 .status-container {
@@ -40,9 +55,17 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
   width: 100%;
   height: 100%;
+  position: relative;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 11;
 }
 
 .status-label {
@@ -52,6 +75,17 @@ body {
   opacity: 0.9;
   text-align: center;
   animation: fadeIn 0.3s ease-out;
+  position: absolute;
+  top: 90px;
+  width: 100%;
+}
+
+.welcome-text {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.02em;
 }
 
 @keyframes fadeIn {
@@ -80,59 +114,80 @@ body {
   animation: spin 1s linear infinite;
 }
 
-@keyframes icon-pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+/* Particle Container positioned behind the visual card */
+.particle-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* V5 Transition: Container rotation for Transcribing */
+.transcribing.particle-container {
+  animation: container-orbit 4s infinite linear;
+}
+
+@keyframes container-orbit {
+  from {
+    transform: rotate(0deg);
   }
 
-  50% {
-    transform: scale(1.2);
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  /* Landing Page Size (w-1) */
+  height: 4px;
+  background-color: #818cf8;
+  border-radius: 50%;
+  /* V6: Dual-layer glow for maximum intensity, no blur filter */
+  box-shadow: 0 0 14px rgba(129, 140, 248, 1), 0 0 6px rgba(129, 140, 248, 0.8);
+  opacity: 0;
+}
+
+/* Recording & Transcribing: Both use radial-drift, but Transcribing freezes it */
+.recording .particle,
+.transcribing .particle {
+  animation: radial-drift var(--duration, 2.5s) infinite var(--delay, 0s) linear;
+}
+
+/* V6: Continuity - Freeze the drift when transcribing so they orbit at current radius */
+.transcribing .particle {
+  animation-play-state: paused;
+}
+
+@keyframes radial-drift {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.8;
+  }
+
+  85% {
     opacity: 0.8;
   }
 
   100% {
-    transform: scale(1);
-    opacity: 1;
+    transform: translate(var(--tx), var(--ty));
+    opacity: 0;
   }
 }
 
-.icon-pulse {
-  animation: icon-pulse 1.5s infinite ease-in-out;
-  position: relative;
-  z-index: 2;
-}
-
-/* Wave Effect */
-.recording::before,
-.recording::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background-color: rgba(239, 68, 68, 0.6);
+/* Fade out for other states */
+.done .particle,
+.error .particle,
+.idle .particle {
   opacity: 0;
-  z-index: 1;
-  animation: wave 2s infinite cubic-bezier(0, 0, 0.2, 1);
-}
-
-.recording::after {
-  animation-delay: 1s;
-}
-
-@keyframes wave {
-  0% {
-    transform: scale(0.4);
-    opacity: 0;
-  }
-
-  30% {
-    opacity: 0.4;
-  }
-
-  100% {
-    transform: scale(0.9);
-    opacity: 0;
-  }
+  transition: opacity 0.5s ease-out;
 }

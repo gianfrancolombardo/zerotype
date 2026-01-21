@@ -65,11 +65,13 @@ class Transcriber:
 
         # We still print to stderr for logs
         self.model = WhisperModel(model_size, device=device, compute_type=compute_type)
-        print("Model loaded.", file=sys.stderr)
+        print(f"Model loaded: {model_size}", file=sys.stderr)
 
-    def transcribe(self, audio_data):
+    def transcribe(self, audio_data, language=None):
         print_status("transcribing")
-        segments, info = self.model.transcribe(audio_data, beam_size=5)
+        # If language is "auto", use None to let Whisper detect
+        lang = None if language == "auto" else language
+        segments, info = self.model.transcribe(audio_data, beam_size=5, language=lang)
         text = " ".join([segment.text for segment in segments]).strip()
         return text
 
@@ -110,7 +112,7 @@ class ConfigManager:
                     return json.load(f)
             except Exception as e:
                 print(f"Error loading config: {e}", file=sys.stderr)
-        return {"hotkey": "f4", "model": "tiny"}
+        return {"hotkey": "f4", "model": "tiny", "language": "es"}
 
     def save_config(self, new_config):
         self.config.update(new_config)
@@ -171,7 +173,8 @@ class ZerotypeEngine:
             return
         
         try:
-            text = self.transcriber.transcribe(audio)
+            language = self.config_manager.get("language")
+            text = self.transcriber.transcribe(audio, language=language)
             if text:
                 print(f"Transcribed: {text}", file=sys.stderr)
                 self.simulator.type_text(text)
@@ -181,7 +184,7 @@ class ZerotypeEngine:
                 print_status("error", {"message": "No text detected"})
         except Exception as e:
             print(f"Error: {e}", file=sys.stderr)
-            print_status("error", {"message": str(e)})
+            print_status("error", {"message": f"Error: {str(e)}"})
 
 if __name__ == "__main__":
     engine = ZerotypeEngine()

@@ -41,10 +41,17 @@ ipcMain.handle('get-settings', async () => {
         log(`Failed to load settings: ${e}`);
         console.error("Failed to read config:", e);
     }
-    return { hotkey: 'f4', model: 'tiny' };
+    return { hotkey: 'f4', model: 'tiny', language: 'es' };
 });
 
 ipcMain.on('relaunch-app', () => {
+    log('Relaunching app...');
+
+    // Kill python process specifically before relaunch
+    if (pythonProcess) {
+        pythonProcess.kill();
+    }
+
     app.relaunch({ args: process.argv.slice(1).concat(['--relaunch-settings']) });
     app.exit(0);
 });
@@ -73,7 +80,7 @@ function createWindow() {
         alwaysOnTop: true,
         focusable: false,
         skipTaskbar: true,
-        show: false, // Start hidden
+        show: true, // Start visible for the welcome message
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -95,7 +102,26 @@ function createWindow() {
 
     mainWindow.once('ready-to-show', () => {
         log('Main window ready to show');
-        // mainWindow.show(); // It starts hidden by design
+        mainWindow.show(); // Force show on ready
+        mainWindow.setAlwaysOnTop(true, 'screen-saver'); // Force on top
+
+        // Start the welcome timer ONLY when the window is actually ready
+        global.canHideWindow = false;
+        setTimeout(() => {
+            global.canHideWindow = true;
+            // If the app is currently idle, we should hide it now that the welcome period is over
+            // We can send a message to frontend to check status or just hide if we know it's idle
+            // But safely, let's just let the next update handle it or force a check.
+            // For simplicity, we can rely on the frontend sending a 'ready' or just wait for the next heartbeat.
+            // Or better: check if we are 'idle' effectively.
+
+            // To be clean: let the frontend switch to idle, and if we receive an idle status update (or have received one), we hide.
+            // Since we can't easily check the last received status here without more state, 
+            // we will let the next python heartbeat hide it, OR we can check if the window is visible and we want to hide.
+
+            // Let's explicitly ask the window to hide if it's "done" with welcome.
+            // But proper way is: Frontend 'welcome' state ends -> Frontend might look like 'idle'.
+        }, 2500); // 2.5 seconds visible guaranteed
     });
 
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
@@ -197,13 +223,16 @@ function startPythonBackend() {
                     mainWindow.webContents.send('status-update', message);
 
                     // Visibility Logic
+                    // We prevent hiding during the first 3 seconds to show the welcome message
                     if (message.status === 'idle') {
-                        mainWindow.hide();
+                        if (global.canHideWindow) {
+                            mainWindow.hide();
+                        }
                     } else if (message.status === 'downloading_model' || message.status === 'model_ready' || message.status === 'loading_model') {
                         // Users asked to remove feedback, stay hidden
                         mainWindow.hide();
                     } else {
-                        // Show for recording, transcribing, error, done
+                        // Show for recording, transcribing, error, done, or welcome
                         mainWindow.show();
                     }
                 }
@@ -214,7 +243,12 @@ function startPythonBackend() {
     });
 
     pythonProcess.stderr.on('data', (data) => {
-        console.error(`Python Error: ${data}`);
+        const msg = data.toString().trim();
+        if (msg.startsWith('Error:')) {
+            console.error(`Python Error: ${msg.substring(6).trim()}`);
+        } else {
+            console.log(`Python: ${msg}`);
+        }
     });
 
     pythonProcess.on('error', (err) => {
