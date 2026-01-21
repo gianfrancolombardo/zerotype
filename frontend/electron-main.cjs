@@ -6,6 +6,7 @@ let mainWindow;
 let pythonProcess;
 let tray;
 let settingsWindow;
+let lastStatus = 'idle';
 
 const fs = require('fs');
 
@@ -109,19 +110,11 @@ function createWindow() {
         global.canHideWindow = false;
         setTimeout(() => {
             global.canHideWindow = true;
-            // If the app is currently idle, we should hide it now that the welcome period is over
-            // We can send a message to frontend to check status or just hide if we know it's idle
-            // But safely, let's just let the next update handle it or force a check.
-            // For simplicity, we can rely on the frontend sending a 'ready' or just wait for the next heartbeat.
-            // Or better: check if we are 'idle' effectively.
-
-            // To be clean: let the frontend switch to idle, and if we receive an idle status update (or have received one), we hide.
-            // Since we can't easily check the last received status here without more state, 
-            // we will let the next python heartbeat hide it, OR we can check if the window is visible and we want to hide.
-
-            // Let's explicitly ask the window to hide if it's "done" with welcome.
-            // But proper way is: Frontend 'welcome' state ends -> Frontend might look like 'idle'.
-        }, 2500); // 2.5 seconds visible guaranteed
+            // If the app is currently idle, hide it now that the welcome period is over
+            if (mainWindow && !mainWindow.isDestroyed() && lastStatus === 'idle') {
+                mainWindow.hide();
+            }
+        }, 1900); // Hide window right at the end of the exit animation
     });
 
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
@@ -220,6 +213,7 @@ function startPythonBackend() {
                 const message = JSON.parse(line);
 
                 if (mainWindow && !mainWindow.isDestroyed()) {
+                    lastStatus = message.status;
                     mainWindow.webContents.send('status-update', message);
 
                     // Visibility Logic

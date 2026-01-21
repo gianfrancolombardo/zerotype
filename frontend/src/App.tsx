@@ -13,7 +13,7 @@ const ParticleVisualizer = ({ status }: { status: string }) => {
         const tx = Math.cos((angle * Math.PI) / 180) * driftRadius;
         const ty = Math.sin((angle * Math.PI) / 180) * driftRadius;
         const delay = Math.random() * 2;
-        const duration = 3 + Math.random() * 2; // Majestic movement
+        const duration = 4 + Math.random() * 3; // Even more majestic and slow
 
         return (
           <div
@@ -35,14 +35,24 @@ const ParticleVisualizer = ({ status }: { status: string }) => {
 
 function App() {
   const [status, setStatus] = useState<string>('welcome');
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Show welcome message for 2500ms
-    const timer = setTimeout(() => {
-      setStatus('idle');
-    }, 2500);
+    // Stage 1: Wait 1.5s then start exit animation
+    const exitTimer = setTimeout(() => {
+      setIsExiting(true);
+    }, 1500);
 
-    return () => clearTimeout(timer);
+    // Stage 2: Wait for animation (300ms) plus a safety buffer, then go idle
+    // This transition should happen AFTER the window is hidden by Electron
+    const idleTimer = setTimeout(() => {
+      setStatus('idle');
+    }, 2000);
+
+    return () => {
+      clearTimeout(exitTimer);
+      clearTimeout(idleTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -59,6 +69,17 @@ function App() {
   }, []);
 
   const getStatusContent = () => {
+    if (status === 'welcome') {
+      return (
+        <div className="status-container welcome">
+          <div className={`welcome-card ${isExiting ? 'exit' : ''}`}>
+            <Mic size={16} color="var(--color-accent)" style={{ opacity: 0.8 }} />
+            <span className="welcome-text-content">Zerotype está listo cuando tú lo estés.</span>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className={`status-container ${status}`}>
         {/* Particles are at z-index 5 */}
@@ -71,15 +92,9 @@ function App() {
             {status === 'transcribing' && <Loader2 size={32} className="spin" color="var(--color-accent)" />}
             {status === 'done' && <Check size={32} color="#22c55e" />}
             {status === 'error' && <AlertCircle size={32} color="#ef4444" />}
-            {status === 'welcome' && <Mic size={24} color="var(--color-accent)" style={{ opacity: 0.8 }} />}
             {(status === 'idle' || status === '') && <Mic size={24} color="var(--color-secondary)" style={{ opacity: 0.3 }} />}
           </div>
         </div>
-        {status === 'welcome' && (
-          <div className="status-label welcome-text">
-            Zerotype está listo cuando tú lo estés.
-          </div>
-        )}
       </div>
     );
   };
