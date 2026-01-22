@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings as SettingsIcon, Keyboard, Cpu, Save, Zap, Activity, Brain, CheckCircle2, X, AlertTriangle } from 'lucide-react';
+import { Keyboard, Cpu, Save, Zap, Activity, Brain, CheckCircle2, X, AlertTriangle } from 'lucide-react';
 import './App.css';
 
 interface ElectronAPI {
